@@ -1,0 +1,5 @@
+[package]
+name = "udp_packet_dumper"
+description = "Listens to a single port and dumps the packets to a directory."
+version = "0.1.0"
+edition = "2021"
