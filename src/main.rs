@@ -3,7 +3,8 @@ use std::fs;
 use std::env;
 use std::time::SystemTime;
 
-const BUFFER_SIZE: usize = 1024;
+/// Size of the [`u8`] buffer used to read UDP packets.
+const BUFFER_SIZE: usize = 65536; // 2^16 (max UDP packet size is 65527)
 
 fn main() {
     // Parse command line arguments:
@@ -36,7 +37,7 @@ fn main() {
         // Blocking receive UDP packet:
         match udp_socket.recv_from(&mut buffer) {
             Ok((size, source)) => {
-                let packet_data = &buffer[..size];
+                let packet_data: &[u8] = &buffer[..size];
                 handle_packet(packet_data, output_directory, source);
             }
             Err(e) => {
