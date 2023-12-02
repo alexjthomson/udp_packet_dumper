@@ -1,35 +1,39 @@
-use std::net::{UdpSocket, SocketAddr};
+use std::net::{UdpSocket, SocketAddr, IpAddr};
 use std::fs;
 use std::env;
 use std::time::SystemTime;
 
+const BUFFER_SIZE: usize = 1024;
+
 fn main() {
-    // Parse command line arguments
+    // Parse command line arguments:
     let args: Vec<String> = env::args().collect();
     if args.len() != 4 {
         eprintln!("Usage: {} <ip_address> <port> <output_directory>", args[0]);
         std::process::exit(1);
     }
 
-    let ip_address = args[1].parse().expect("Invalid IP address");
+    let ip_address: IpAddr = args[1].parse().expect("Invalid IP address");
     let port: u16 = args[2].parse().expect("Invalid port");
-    let output_directory = &args[3];
+    let output_directory: &String = &args[3];
 
-    // Create the output directory if it doesn't exist
+    // Create the output directory if it doesn't exist:
     if !fs::metadata(output_directory).is_ok() {
         fs::create_dir(output_directory).expect("Failed to create output directory");
     }
 
-    // Bind to the specified IP address and port
+    // Bind to the specified IP address and port:
     let bind_address = SocketAddr::new(ip_address, port);
     let udp_socket = UdpSocket::bind(bind_address).expect("Failed to bind to socket");
 
     println!("Listening for UDP packets on {}:{}...", ip_address, port);
 
-    // Main loop to receive and dump packets
-    loop {
-        let mut buffer = [0u8; 1500]; // Buffer to store the received packet
+    // Create a buffer to store the dumped packets into:
+    let mut buffer: [u8; BUFFER_SIZE] = [0u8; BUFFER_SIZE];
 
+    // Main loop to receive and dump packets:
+    loop {
+        // Blocking receive UDP packet:
         match udp_socket.recv_from(&mut buffer) {
             Ok((size, source)) => {
                 let packet_data = &buffer[..size];
