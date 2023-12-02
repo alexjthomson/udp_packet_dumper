@@ -1,22 +1,14 @@
 use std::net::{UdpSocket, SocketAddr, IpAddr};
 use std::fs;
-use std::env;
 use std::time::SystemTime;
 
 /// Size of the [`u8`] buffer used to read UDP packets.
 const BUFFER_SIZE: usize = 65536; // 2^16 (max UDP packet size is 65527)
 
 fn main() {
-    // Parse command line arguments:
-    let args: Vec<String> = env::args().collect();
-    if args.len() != 4 {
-        eprintln!("Usage: {} <ip_address> <port> <output_directory>", args[0]);
-        std::process::exit(1);
-    }
-
-    let ip_address: IpAddr = args[1].parse().expect("Invalid IP address");
-    let port: u16 = args[2].parse().expect("Invalid port");
-    let output_directory: &String = &args[3];
+    let ip_address: IpAddr = "127.0.0.1".parse().expect("Invalid IP address");
+    let port: u16 = 12060;
+    let output_directory: &'static str = "C:/ftpup/N1MM/newfiles";
 
     // Create the output directory if it doesn't exist:
     if !fs::metadata(output_directory).is_ok() {
