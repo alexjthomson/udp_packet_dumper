@@ -1,7 +1,9 @@
-use std::net::{UdpSocket, SocketAddr, IpAddr};
-use std::fs;
-use std::env;
-use std::time::SystemTime;
+use std::{
+    net::{UdpSocket, SocketAddr, IpAddr},
+    fs,
+    env,
+    time::SystemTime
+};
 
 /// Size of the [`u8`] buffer used to read UDP packets.
 const BUFFER_SIZE: usize = 65536; // 2^16 (max UDP packet size is 65527)
@@ -24,8 +26,8 @@ fn main() {
     }
 
     // Bind to the specified IP address and port:
-    let bind_address = SocketAddr::new(ip_address, port);
-    let udp_socket = UdpSocket::bind(bind_address).expect("Failed to bind to socket");
+    let bind_address: SocketAddr = SocketAddr::new(ip_address, port);
+    let udp_socket: UdpSocket = UdpSocket::bind(bind_address).expect("Failed to bind to socket");
 
     println!("Listening for UDP packets on {}:{}...", ip_address, port);
 
@@ -54,7 +56,7 @@ fn main() {
 fn handle_packet(packet_data: &[u8], output_directory: &str, source: SocketAddr) {
     // Construct the name of the file based on the source IP address, port, and
     // current system time since UNIX EPOCH in nano seconds:
-    let file_name = format!(
+    let file_name: String = format!(
         "packet_{}_{}_{}.dump",
         source.ip(),
         source.port(),
@@ -66,7 +68,7 @@ fn handle_packet(packet_data: &[u8], output_directory: &str, source: SocketAddr)
 
     // Using the constructed file name, construct the file path by appending it
     // to the end of the provided output directory:
-    let file_path = format!("{}/{}", output_directory, file_name);
+    let file_path: String = format!("{}/{}", output_directory, file_name);
 
     // Write the received packet bytes to the constructed file output directory:
     match fs::write(&file_path, packet_data) {
